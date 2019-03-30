@@ -116,7 +116,7 @@ public class NavigationActivity extends AppCompatActivity
         } else if (id == R.id.nav_manage) {
 
         } else if (id == R.id.nav_manage_exercises) {
-
+            getSupportFragmentManager().beginTransaction().replace(R.id.c_main, new BlankFragment()).commit();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
