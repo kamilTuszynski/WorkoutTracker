@@ -1,8 +1,10 @@
 package com.workouttracker;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +14,7 @@ import android.view.ViewGroup;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link BlankFragment.OnFragmentInteractionListener} interface
+ *  interface
  * to handle interaction events.
  * Use the {@link BlankFragment#newInstance} factory method to
  * create an instance of this fragment.
@@ -64,7 +66,18 @@ public class BlankFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_manage_exercises, container, false);
+        View view = inflater.inflate(R.layout.fragment_manage_exercises, container, false);
+
+        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fabAddExercise);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(),AddExerciseAcitvity.class);
+                startActivity(intent);
+            }
+        });
+
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
