@@ -7,17 +7,17 @@
     tools:context=".AddExerciseAcitvity">
 
     <Switch
-        android:id="@+id/switch4"
+        android:id="@+id/switch_distancePossible"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:text="Czy dystans jest możliwy?"
-        app:layout_constraintEnd_toEndOf="@+id/editText"
-        app:layout_constraintStart_toStartOf="@+id/editText"
-        app:layout_constraintTop_toBottomOf="@+id/switch3" />
+        app:layout_constraintEnd_toEndOf="@+id/et_exerciseName"
+        app:layout_constraintStart_toStartOf="@+id/et_exerciseName"
+        app:layout_constraintTop_toBottomOf="@+id/switch_timePossible" />
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/et_exerciseName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
@@ -36,44 +36,45 @@
         app:layout_constraintVertical_bias="0.100000024" />
 
     <Switch
-        android:id="@+id/switch1"
+        android:id="@+id/switch_repsPossible"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:text="Czy powtórzenia są możliwe?"
-        app:layout_constraintEnd_toEndOf="@+id/editText"
-        app:layout_constraintStart_toStartOf="@+id/editText"
-        app:layout_constraintTop_toBottomOf="@+id/editText" />
+        app:layout_constraintEnd_toEndOf="@+id/et_exerciseName"
+        app:layout_constraintStart_toStartOf="@+id/et_exerciseName"
+        app:layout_constraintTop_toBottomOf="@+id/et_exerciseName" />
 
     <Switch
-        android:id="@+id/switch2"
+        android:id="@+id/switch_weightPossible"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:text="Czy ciężar jest możliwy?"
-        app:layout_constraintEnd_toEndOf="@+id/editText"
-        app:layout_constraintStart_toStartOf="@+id/editText"
-        app:layout_constraintTop_toBottomOf="@+id/switch1" />
+        app:layout_constraintEnd_toEndOf="@+id/et_exerciseName"
+        app:layout_constraintStart_toStartOf="@+id/et_exerciseName"
+        app:layout_constraintTop_toBottomOf="@+id/switch_repsPossible" />
 
     <Switch
-        android:id="@+id/switch3"
+        android:id="@+id/switch_timePossible"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:text="Czy czas jest możliwy?"
-        app:layout_constraintEnd_toEndOf="@+id/editText"
-        app:layout_constraintStart_toStartOf="@+id/editText"
-        app:layout_constraintTop_toBottomOf="@+id/switch2" />
+        app:layout_constraintEnd_toEndOf="@+id/et_exerciseName"
+        app:layout_constraintStart_toStartOf="@+id/et_exerciseName"
+        app:layout_constraintTop_toBottomOf="@+id/switch_weightPossible" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/btn_addExercise"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:text="Dodaj"
-        app:layout_constraintEnd_toEndOf="@+id/switch4"
+        android:onClick="addExercise"
+        app:layout_constraintEnd_toEndOf="@+id/switch_distancePossible"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/switch4" />
+        app:layout_constraintTop_toBottomOf="@+id/switch_distancePossible" />
 
 </android.support.constraint.ConstraintLayout>

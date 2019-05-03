@@ -4,11 +4,26 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.workouttracker.adapters.ExerciseAdapter;
+import com.workouttracker.models.Exercise;
 
 
 /**
@@ -20,6 +35,12 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class BlankFragment extends Fragment {
+    private ExerciseAdapter adapter;
+
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private CollectionReference exercisesRef = db.collection("exercises");
+
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -60,6 +81,8 @@ public class BlankFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+
     }
 
     @Override
@@ -76,6 +99,27 @@ public class BlankFragment extends Fragment {
                 startActivity(intent);
             }
         });
+
+        DocumentReference docRef = db.collection("exercises").document("Przysiad low bar");
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        String exerciseName = document.getString("name");
+                        Toast.makeText(getActivity(), "Name: + " + exerciseName, Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(getActivity(), "No such document", Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    Toast.makeText(getActivity(), "get failed with", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+
+        setUpRecyclerView(view);
 
         return view;
     }
@@ -104,7 +148,19 @@ public class BlankFragment extends Fragment {
         //mListener = null;
     }
 
-//    /**
+    @Override
+    public void onStart() {
+        super.onStart();
+        adapter.startListening();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        adapter.stopListening();
+    }
+
+    //    /**
 //     * This interface must be implemented by activities that contain this
 //     * fragment to allow an interaction in this fragment to be communicated
 //     * to the activity and potentially other fragments contained in that
@@ -118,4 +174,19 @@ public class BlankFragment extends Fragment {
 //        // TODO: Update argument type and name
 //        void onFragmentInteraction(Uri uri);
 //    }
+
+    private void setUpRecyclerView(View v) {
+        Query query = exercisesRef.orderBy("name", Query.Direction.ASCENDING);
+
+        FirestoreRecyclerOptions<Exercise> options = new FirestoreRecyclerOptions.Builder<Exercise>()
+                .setQuery(query, Exercise.class)
+                .build();
+
+        adapter = new ExerciseAdapter(options);
+
+        RecyclerView recyclerView = v.findViewById(R.id.recView_exercises);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setAdapter(adapter);
+    }
 }
