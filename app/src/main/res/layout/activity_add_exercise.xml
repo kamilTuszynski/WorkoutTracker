@@ -28,7 +28,7 @@
         android:layout_marginBottom="8dp"
         android:ems="10"
         android:hint="Nazwa ćwiczenia"
-        android:inputType="textPersonName"
+        android:inputType="textCapSentences"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

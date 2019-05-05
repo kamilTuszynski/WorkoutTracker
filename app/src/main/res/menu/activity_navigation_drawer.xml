@@ -9,7 +9,7 @@
             android:icon="@drawable/ic_menu_camera"
             android:title="Trening" />
         <item
-            android:id="@+id/nav_gallery"
+            android:id="@+id/nav_createPlan"
             android:icon="@drawable/ic_menu_gallery"
             android:title="Stwórz plan" />
         <item
@@ -25,6 +25,11 @@
             android:id="@+id/nav_manage_exercises"
             android:icon="@drawable/ic_menu_manage"
             android:title="Zarządzanie ćwiczeniami" />
+
+        <item
+            android:id="@+id/nav_logOut"
+            android:icon="@drawable/ic_exit_to_app_black_24dp"
+            android:title="Wyloguj" />
     </group>
 
 

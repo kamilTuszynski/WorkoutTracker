@@ -49,6 +49,10 @@ public class ExerciseAdapter extends FirestoreRecyclerAdapter<Exercise, Exercise
         return new ExerciseHolder(v);
     }
 
+    public void deleteItem(int position) {
+        getSnapshots().getSnapshot(position).getReference().delete();
+    }
+
     class ExerciseHolder extends RecyclerView.ViewHolder{
         TextView textViewExerciseName;
         ImageView imageViewReps;

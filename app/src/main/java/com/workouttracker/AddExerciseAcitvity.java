@@ -1,13 +1,17 @@
 package com.workouttracker;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Switch;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.workouttracker.models.Exercise;
 
@@ -21,8 +25,6 @@ public class AddExerciseAcitvity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Dodaj ćwiczenie");
-
-        Button button = (Button) findViewById(R.id.btn_addExercise);
     }
 
     public void addExercise(View v) {
@@ -43,8 +45,20 @@ public class AddExerciseAcitvity extends AppCompatActivity {
                     weightPossible.isChecked(), timePossible.isChecked(), distancePossible.isChecked());
 
             FirebaseFirestore db = FirebaseFirestore.getInstance();
-            db.collection("exercises")
-                    .document(exerciseName).set(exercise);
+            db.collection("exercises").add(exercise)
+                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                        @Override
+                        public void onSuccess(DocumentReference documentReference) {
+                            finish();
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(AddExerciseAcitvity.this,
+                                    "Dodawanie ćwiczenia nie powiodło się", Toast.LENGTH_LONG).show();
+                        }
+                    });
 
         }
     }
