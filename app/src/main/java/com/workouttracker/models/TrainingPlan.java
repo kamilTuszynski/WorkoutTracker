@@ -1,7 +1,5 @@
 package com.workouttracker.models;
 
-import java.util.List;
-
 public class TrainingPlan {
     private String name;
     private String description;
@@ -9,18 +7,18 @@ public class TrainingPlan {
     private String difficulty;
 
     private int durationInWeeks;
-    List<TrainingWeek> trainingWeeks;
+    //List<TrainingWeek> trainingWeeks;
 
     public TrainingPlan() {
     }
 
-    public TrainingPlan(String name, String description, String type, String difficulty, int durationInWeeks, List<TrainingWeek> trainingWeeks) {
+    public TrainingPlan(String name, String description, String type, String difficulty, int durationInWeeks/*, List<TrainingWeek> trainingWeeks*/) {
         this.name = name;
         this.description = description;
         this.type = type;
         this.difficulty = difficulty;
         this.durationInWeeks = durationInWeeks;
-        this.trainingWeeks = trainingWeeks;
+        //this.trainingWeeks = trainingWeeks;
     }
 
     public String getName() {
@@ -43,7 +41,7 @@ public class TrainingPlan {
         return durationInWeeks;
     }
 
-    public List<TrainingWeek> getTrainingWeeks() {
-        return trainingWeeks;
-    }
+//    public List<TrainingWeek> getTrainingWeeks() {
+//        return trainingWeeks;
+//    }
 }

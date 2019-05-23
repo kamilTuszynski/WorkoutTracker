@@ -1,24 +1,22 @@
 package com.workouttracker.models;
 
-import java.util.List;
-
 public class TrainingWeek {
     private int weekNumber;
-    List<TrainingDay> trainingDays;
+    //List<TrainingDay> trainingDays;
 
     public TrainingWeek() {
     }
 
-    public TrainingWeek(int weekNumber, List<TrainingDay> trainingDays) {
+    public TrainingWeek(int weekNumber/*, List<TrainingDay> trainingDays*/) {
         this.weekNumber = weekNumber;
-        this.trainingDays = trainingDays;
+        //this.trainingDays = trainingDays;
     }
 
     public int getWeekNumber() {
         return weekNumber;
     }
 
-    public List<TrainingDay> getTrainingDays() {
-        return trainingDays;
-    }
+//    public List<TrainingDay> getTrainingDays() {
+//        return trainingDays;
+//    }
 }

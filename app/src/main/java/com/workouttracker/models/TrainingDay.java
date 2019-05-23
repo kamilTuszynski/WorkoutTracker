@@ -1,14 +1,14 @@
 package com.workouttracker.models;
 
-import java.util.List;
-
 public class TrainingDay {
     private int dayNumber;
-    private List<ExerciseSets> exercises;
+    boolean restDay;
+    //private List<ExerciseSets> exercises;
 
-    public TrainingDay(int dayNumber, List<ExerciseSets> exercises) {
+    public TrainingDay(int dayNumber, boolean restDay/*, List<ExerciseSets> exercises*/) {
         this.dayNumber = dayNumber;
-        this.exercises = exercises;
+        this.restDay = restDay;
+        //this.exercises = exercises;
     }
 
     public TrainingDay() {
@@ -18,7 +18,10 @@ public class TrainingDay {
         return dayNumber;
     }
 
-    public List<ExerciseSets> getExercises() {
-        return exercises;
+    public boolean isRestDay() {
+        return restDay;
     }
+//    public List<ExerciseSets> getExercises() {
+//        return exercises;
+//    }
 }

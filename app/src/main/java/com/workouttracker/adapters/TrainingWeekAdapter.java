@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -25,13 +26,14 @@ public class TrainingWeekAdapter extends FirestoreRecyclerAdapter<TrainingWeek, 
 
     @Override
     protected void onBindViewHolder(@NonNull TrainingWeekHolder holder, int position, @NonNull TrainingWeek model) {
+        holder.textViewTrainingWeek.setText("Week " + String.valueOf(model.getWeekNumber()));
 
     }
 
     @NonNull
     @Override
     public TrainingWeekHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.exercise_item,
+        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.training_week_item,
                 viewGroup, false);
         return new TrainingWeekHolder(v);
     }
@@ -41,9 +43,11 @@ public class TrainingWeekAdapter extends FirestoreRecyclerAdapter<TrainingWeek, 
     }
 
     class TrainingWeekHolder extends RecyclerView.ViewHolder{
+        TextView textViewTrainingWeek;
 
         public TrainingWeekHolder(View itemView){
             super(itemView);
+            textViewTrainingWeek = itemView.findViewById(R.id.textView_trainingWeek);
         }
     }
 }
