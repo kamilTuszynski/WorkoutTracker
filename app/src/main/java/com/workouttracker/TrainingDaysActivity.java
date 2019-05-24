@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.CollectionReference;
@@ -29,7 +28,7 @@ public class TrainingDaysActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Dni tygodnia");
+        getSupportActionBar().setTitle("Tydzień " + String.valueOf(getIntent().getExtras().getInt("weekNumber")));
 
         setUpRecyclerView();
     }
@@ -78,8 +77,15 @@ public class TrainingDaysActivity extends AppCompatActivity {
         adapter.setOnItemClickListener(new TrainingDayAdapter.OnItemClickListener() {
             @Override
             public void OnItemClick(DocumentSnapshot documentSnapshot, int position) {
-                String id = documentSnapshot.getId();
-                Toast.makeText(TrainingDaysActivity.this, id, Toast.LENGTH_LONG).show();
+                String path = documentSnapshot.getReference().getPath();
+                TrainingDay day = documentSnapshot.toObject(TrainingDay.class);
+                int dayNumber = day.getDayNumber();
+
+                Intent i = new Intent(TrainingDaysActivity.this, TrainingSetsActivity.class);
+                i.putExtra("path", path);
+                i.putExtra("dayNumber", dayNumber);
+                i.putExtra("weekNumber", getIntent().getExtras().getInt("weekNumber"));
+                startActivity(i);
             }
         });
     }

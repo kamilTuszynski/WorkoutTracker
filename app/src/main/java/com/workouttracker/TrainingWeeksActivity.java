@@ -29,7 +29,7 @@ public class TrainingWeeksActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Tygodnie planu");
+        getSupportActionBar().setTitle(getIntent().getExtras().getString("planName"));
 
         setUpRecyclerView();
     }
@@ -79,9 +79,12 @@ public class TrainingWeeksActivity extends AppCompatActivity {
             @Override
             public void OnItemClick(DocumentSnapshot documentSnapshot, int position) {
                 String path = documentSnapshot.getReference().getPath();
+                TrainingWeek week = documentSnapshot.toObject(TrainingWeek.class);
+                int weekNumber = week.getWeekNumber();
 
                 Intent i = new Intent(TrainingWeeksActivity.this, TrainingDaysActivity.class);
                 i.putExtra("path", path);
+                i.putExtra("weekNumber", weekNumber);
                 startActivity(i);
             }
         });

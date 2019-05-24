@@ -70,7 +70,7 @@ public class CreateTrainingPlanActivity extends AppCompatActivity {
 
         if(validatedCorrectly)
         {
-            String name = planNameEditText.getText().toString().trim();
+            final String name = planNameEditText.getText().toString().trim();
             String description = planDescriptionEditText.getText().toString();
             String type = spinner_planType.getSelectedItem().toString();
             String difficulty = spinner_planDifficulty.getSelectedItem().toString();
@@ -132,6 +132,7 @@ public class CreateTrainingPlanActivity extends AppCompatActivity {
 
                     Intent i = new Intent(CreateTrainingPlanActivity.this, TrainingWeeksActivity.class);
                     i.putExtra("planId", planId);
+                    i.putExtra("planName", name);
                     startActivity(i);
                 }
             })
