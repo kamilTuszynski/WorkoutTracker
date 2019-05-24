@@ -6,30 +6,30 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
-import com.workouttracker.adapters.TrainingWeekAdapter;
-import com.workouttracker.models.TrainingWeek;
+import com.workouttracker.adapters.TrainingDayAdapter;
+import com.workouttracker.models.TrainingDay;
 
-public class TrainingWeeksActivity extends AppCompatActivity {
-
-    private TrainingWeekAdapter adapter;
+public class TrainingDaysActivity extends AppCompatActivity {
+    private TrainingDayAdapter adapter;
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private CollectionReference plansRef;
+    private CollectionReference daysRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_training_weeks);
+        setContentView(R.layout.activity_training_days);
 
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Tygodnie planu");
+        getSupportActionBar().setTitle("Dni tygodnia");
 
         setUpRecyclerView();
     }
@@ -59,30 +59,27 @@ public class TrainingWeeksActivity extends AppCompatActivity {
 
     private void setUpRecyclerView() {
         Intent intent = getIntent();
-        String planId = intent.getExtras().getString("planId");
+        String path = intent.getExtras().getString("path");
 
-        plansRef = db.collection("trainingPlans/" + planId + "/trainingWeeks");
-        Query query = plansRef.orderBy("weekNumber", Query.Direction.ASCENDING);
+        daysRef = db.collection(path + "/trainingDays");
+        Query query = daysRef.orderBy("dayNumber", Query.Direction.ASCENDING);
 
-        FirestoreRecyclerOptions<TrainingWeek> options = new FirestoreRecyclerOptions.Builder<TrainingWeek>()
-                .setQuery(query, TrainingWeek.class)
+        FirestoreRecyclerOptions<TrainingDay> options = new FirestoreRecyclerOptions.Builder<TrainingDay>()
+                .setQuery(query, TrainingDay.class)
                 .build();
 
-        adapter = new TrainingWeekAdapter(options);
+        adapter = new TrainingDayAdapter(options);
 
-        RecyclerView recyclerView = findViewById(R.id.recView_trainingWeeks);
+        RecyclerView recyclerView = findViewById(R.id.recView_trainingDays);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
-        adapter.setOnItemClickListener(new TrainingWeekAdapter.OnItemClickListener() {
+        adapter.setOnItemClickListener(new TrainingDayAdapter.OnItemClickListener() {
             @Override
             public void OnItemClick(DocumentSnapshot documentSnapshot, int position) {
-                String path = documentSnapshot.getReference().getPath();
-
-                Intent i = new Intent(TrainingWeeksActivity.this, TrainingDaysActivity.class);
-                i.putExtra("path", path);
-                startActivity(i);
+                String id = documentSnapshot.getId();
+                Toast.makeText(TrainingDaysActivity.this, id, Toast.LENGTH_LONG).show();
             }
         });
     }

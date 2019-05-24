@@ -11,9 +11,11 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.workouttracker.R;
-import com.workouttracker.models.TrainingWeek;
+import com.workouttracker.models.TrainingDay;
 
-public class TrainingWeekAdapter extends FirestoreRecyclerAdapter<TrainingWeek, TrainingWeekAdapter.TrainingWeekHolder> {
+
+
+public class TrainingDayAdapter extends FirestoreRecyclerAdapter<TrainingDay, TrainingDayAdapter.TrainingDayHolder> {
 
     private OnItemClickListener listener;
 
@@ -23,34 +25,34 @@ public class TrainingWeekAdapter extends FirestoreRecyclerAdapter<TrainingWeek, 
      *
      * @param options
      */
-    public TrainingWeekAdapter(@NonNull FirestoreRecyclerOptions options) {
+    public TrainingDayAdapter(@NonNull FirestoreRecyclerOptions options) {
         super(options);
     }
 
     @Override
-    protected void onBindViewHolder(@NonNull TrainingWeekHolder holder, int position, @NonNull TrainingWeek model) {
-        holder.textViewTrainingWeek.setText("Tydzień " + String.valueOf(model.getWeekNumber()));
+    protected void onBindViewHolder(@NonNull TrainingDayHolder holder, int position, @NonNull TrainingDay model) {
+        holder.textViewTrainingDay.setText("Dzień " + String.valueOf(model.getDayNumber()));
 
     }
 
     @NonNull
     @Override
-    public TrainingWeekHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.training_week_item,
+    public TrainingDayHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.training_day_item,
                 viewGroup, false);
-        return new TrainingWeekHolder(v);
+        return new TrainingDayHolder(v);
     }
 
     public void deleteItem(int position) {
         getSnapshots().getSnapshot(position).getReference().delete();
     }
 
-    class TrainingWeekHolder extends RecyclerView.ViewHolder{
-        TextView textViewTrainingWeek;
+    class TrainingDayHolder extends RecyclerView.ViewHolder{
+        TextView textViewTrainingDay;
 
-        public TrainingWeekHolder(View itemView){
+        public TrainingDayHolder(View itemView){
             super(itemView);
-            textViewTrainingWeek = itemView.findViewById(R.id.textView_trainingWeek);
+            textViewTrainingDay = itemView.findViewById(R.id.textView_trainingDay);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

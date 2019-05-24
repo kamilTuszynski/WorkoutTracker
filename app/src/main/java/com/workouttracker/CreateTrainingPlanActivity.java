@@ -18,6 +18,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.WriteBatch;
 import com.workouttracker.models.Exercise;
 import com.workouttracker.models.SetParameters;
+import com.workouttracker.models.TrainingDay;
 import com.workouttracker.models.TrainingPlan;
 import com.workouttracker.models.TrainingWeek;
 
@@ -103,8 +104,12 @@ public class CreateTrainingPlanActivity extends AppCompatActivity {
 
             TrainingPlan plan = new TrainingPlan(name,description,type,difficulty,duration);
             final List<TrainingWeek> weeks = new ArrayList<TrainingWeek>();
+            List<TrainingDay> days = new ArrayList<TrainingDay>();
             for(int i=1; i<=duration; i++){
                 weeks.add(new TrainingWeek(i));
+            }
+            for(int j=1; j<=7; j++){
+                days.add(new TrainingDay(j, false));
             }
 
             FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -112,7 +117,12 @@ public class CreateTrainingPlanActivity extends AppCompatActivity {
             final DocumentReference planRef = db.collection("trainingPlans").document();
             batch.set(planRef, plan);
             for (TrainingWeek week:weeks) {
-                batch.set(planRef.collection("trainingWeeks").document(), week);
+                DocumentReference weekRef = planRef.collection("trainingWeeks").document();
+                batch.set(weekRef, week);
+
+                for (TrainingDay day:days) {
+                    batch.set(weekRef.collection("trainingDays").document(), day);
+                }
             }
 
             batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
