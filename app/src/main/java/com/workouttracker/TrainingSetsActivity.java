@@ -20,6 +20,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.workouttracker.adapters.TrainingSetAdapter;
+import com.workouttracker.fragments.AddTrainingSetDialog;
 import com.workouttracker.models.TrainingSet;
 
 public class TrainingSetsActivity extends AppCompatActivity {
@@ -46,8 +47,12 @@ public class TrainingSetsActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TrainingSet set = new TrainingSet("Przysiad", 5, 9);
-                setsRef.add(set);
+                String setsRefPath = setsRef.getPath();
+                AddTrainingSetDialog dialog = new AddTrainingSetDialog();
+                dialog.setSetsRefPath(setsRefPath);
+                dialog.show(getSupportFragmentManager(), "dialog");
+                //TrainingSet set = new TrainingSet("Przysiad", 5, 9);
+                //setsRef.add(set);
             }
         });
 
