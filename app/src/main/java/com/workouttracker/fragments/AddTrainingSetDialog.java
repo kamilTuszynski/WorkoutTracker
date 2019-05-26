@@ -20,6 +20,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.workouttracker.R;
 import com.workouttracker.models.Exercise;
+import com.workouttracker.models.TrainingSet;
 
 
 public class AddTrainingSetDialog extends AppCompatDialogFragment {
@@ -53,13 +54,14 @@ public class AddTrainingSetDialog extends AppCompatDialogFragment {
                 .setPositiveButton("Dodaj", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
+                        addTrainingSetToFirestore();
                     }
                 });
 
         editTextReps = view.findViewById(R.id.editText_reps);
         editTextRpe = view.findViewById(R.id.editText_rpe);
         spinnerExerciseName = view.findViewById(R.id.spinner_exerciseName);
+        setsRef = db.collection(setsRefPath);
 
         final ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 getActivity(), android.R.layout.simple_spinner_item);
@@ -87,5 +89,29 @@ public class AddTrainingSetDialog extends AppCompatDialogFragment {
 
 
         return builder.create();
+    }
+
+    private void addTrainingSetToFirestore()
+    {
+        String exerciseName = spinnerExerciseName.getSelectedItem().toString();
+
+        if(editTextReps.getText().toString().trim().length() == 0){
+            editTextReps.setError("Podanie liczby powtórzeń jest wymagane!");
+        }
+        else{
+            int reps = Integer.parseInt(editTextReps.getText().toString());
+            int rpe;
+
+            try {
+                rpe = Integer.parseInt(editTextRpe.getText().toString());
+            }
+            catch (NumberFormatException e){
+                rpe = 0;
+            }
+
+            long currentTimeMillis = System.currentTimeMillis();
+            TrainingSet set = new TrainingSet(exerciseName, reps, rpe, currentTimeMillis);
+            setsRef.add(set);
+        }
     }
 }

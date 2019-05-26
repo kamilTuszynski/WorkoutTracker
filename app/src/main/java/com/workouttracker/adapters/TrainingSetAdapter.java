@@ -32,7 +32,9 @@ public class TrainingSetAdapter extends FirestoreRecyclerAdapter<TrainingSet, Tr
     protected void onBindViewHolder(@NonNull TrainingSetHolder holder, int position, @NonNull TrainingSet model) {
         holder.textViewTrainingSetExerciseName.setText(model.getExerciseName());
         holder.textViewTrainingSetReps.setText(String.valueOf(model.getReps()) + " powtórzeń");
-        holder.getTextViewTrainingSetRpe.setText("@" + String.valueOf(model.getRpe()));
+        if(model.getRpe() != 0){
+            holder.getTextViewTrainingSetRpe.setText("@" + String.valueOf(model.getRpe()));
+        }
     }
 
     @NonNull

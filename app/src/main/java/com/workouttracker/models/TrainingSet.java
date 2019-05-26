@@ -4,14 +4,16 @@ public class TrainingSet {
     private String exerciseName;
     private int reps;
     private float rpe;
+    private long timeMillis;
 
     public TrainingSet() {
     }
 
-    public TrainingSet(String exerciseName, int reps, float rpe) {
+    public TrainingSet(String exerciseName, int reps, float rpe, long timeMillis) {
         this.exerciseName = exerciseName;
         this.reps = reps;
         this.rpe = rpe;
+        this.timeMillis = timeMillis;
     }
 
     public String getExerciseName() {
@@ -24,5 +26,9 @@ public class TrainingSet {
 
     public float getRpe() {
         return rpe;
+    }
+
+    public long getTimeMillis() {
+        return timeMillis;
     }
 }

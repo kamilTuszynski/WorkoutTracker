@@ -51,8 +51,6 @@ public class TrainingSetsActivity extends AppCompatActivity {
                 AddTrainingSetDialog dialog = new AddTrainingSetDialog();
                 dialog.setSetsRefPath(setsRefPath);
                 dialog.show(getSupportFragmentManager(), "dialog");
-                //TrainingSet set = new TrainingSet("Przysiad", 5, 9);
-                //setsRef.add(set);
             }
         });
 
@@ -115,7 +113,7 @@ public class TrainingSetsActivity extends AppCompatActivity {
         String path = intent.getExtras().getString("path");
 
         setsRef = db.collection(path + "/trainingSets");
-        Query query = setsRef.orderBy("exerciseName", Query.Direction.ASCENDING);
+        Query query = setsRef.orderBy("timeMillis", Query.Direction.ASCENDING);
 
         FirestoreRecyclerOptions<TrainingSet> options = new FirestoreRecyclerOptions.Builder<TrainingSet>()
                 .setQuery(query, TrainingSet.class)

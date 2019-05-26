@@ -82,26 +82,6 @@ public class CreateTrainingPlanActivity extends AppCompatActivity {
             SetParameters params2 = new SetParameters(50,10,8);
             Exercise exercise2 = new Exercise("Klata",false,false,false,false);
 
-//            ExerciseSets firstExercise = new ExerciseSets(exercise,new ArrayList<SetParameters>(
-//                    Arrays.asList(params,params,params)));
-//            ExerciseSets secondExercise = new ExerciseSets(exercise2,new ArrayList<SetParameters>(
-//                    Arrays.asList(params2,params2,params2)));
-//
-//            TrainingDay firstDay = new TrainingDay(1, new ArrayList<ExerciseSets>(
-//                    Arrays.asList(firstExercise, secondExercise, secondExercise)
-//            ));
-//
-//            TrainingDay fourthDay = new TrainingDay(4, new ArrayList<ExerciseSets>(
-//                    Arrays.asList(secondExercise, firstExercise)
-//            ));
-//
-//            TrainingWeek firstWeek = new TrainingWeek(1, new ArrayList<TrainingDay>(
-//                    Arrays.asList(firstDay, fourthDay)));
-//
-//            TrainingPlan plan = new TrainingPlan(name,description,type,difficulty,duration,
-//                    new ArrayList<TrainingWeek>(Arrays.asList(firstWeek, firstWeek)));
-
-
             TrainingPlan plan = new TrainingPlan(name,description,type,difficulty,duration);
             final List<TrainingWeek> weeks = new ArrayList<TrainingWeek>();
             List<TrainingDay> days = new ArrayList<TrainingDay>();
@@ -142,30 +122,8 @@ public class CreateTrainingPlanActivity extends AppCompatActivity {
                     Toast.makeText(CreateTrainingPlanActivity.this,
                             "Dodawanie planu nie powiodło się", Toast.LENGTH_LONG).show();
                 }
-            })        ;
+            });
 
-
-//            db.collection("trainingPlans").add(plan)
-//                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-//                        @Override
-//                        public void onSuccess(DocumentReference documentReference) {
-//                            for (TrainingWeek week:weeks) {
-//                                documentReference.collection("trainingWeeks").add(week);
-//                            }
-//                            String planId = documentReference.getId();
-//
-//                            Intent i = new Intent(CreateTrainingPlanActivity.this, TrainingWeeksActivity.class);
-//                            i.putExtra("planId", planId);
-//                            startActivity(i);
-//                        }
-//                    })
-//                    .addOnFailureListener(new OnFailureListener() {
-//                        @Override
-//                        public void onFailure(@NonNull Exception e) {
-//                            Toast.makeText(CreateTrainingPlanActivity.this,
-//                                    "Dodawanie planu nie powiodło się", Toast.LENGTH_LONG).show();
-//                        }
-//                    });
         }
 
     }
