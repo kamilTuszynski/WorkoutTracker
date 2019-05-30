@@ -95,7 +95,7 @@ public class NavigationActivity extends AppCompatActivity
         if (id == R.id.nav_camera) {
             // Handle the camera action
         } else if (id == R.id.nav_createPlan) {
-            Intent intent = new Intent(NavigationActivity.this, CreateTrainingPlanActivity.class);
+            Intent intent = new Intent(NavigationActivity.this, ShowTrainingPlansActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_slideshow) {
 
