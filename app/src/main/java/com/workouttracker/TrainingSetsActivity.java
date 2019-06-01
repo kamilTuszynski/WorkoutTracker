@@ -57,6 +57,7 @@ public class TrainingSetsActivity extends AppCompatActivity {
 
         final RecyclerView recViewTrainingSets = findViewById(R.id.recView_trainingSets);
 
+        // TODO: ustawienie restDay w Firestore
         final CheckBox checkBoxRestDay = ( CheckBox ) findViewById(R.id.checkBox_isRestDay );
         checkBoxRestDay.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override

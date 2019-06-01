@@ -15,6 +15,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.workouttracker.adapters.TrainingPlanAdapter;
+import com.workouttracker.fragments.ChooseEditOrStartDialog;
 import com.workouttracker.models.TrainingPlan;
 
 public class ShowTrainingPlansActivity extends AppCompatActivity {
@@ -89,10 +90,10 @@ public class ShowTrainingPlansActivity extends AppCompatActivity {
                 String planId = documentSnapshot.getId();
                 String name = documentSnapshot.toObject(TrainingPlan.class).getName();
 
-                Intent i = new Intent(ShowTrainingPlansActivity.this, TrainingWeeksActivity.class);
-                i.putExtra("planId", planId);
-                i.putExtra("planName", name);
-                startActivity(i);
+                ChooseEditOrStartDialog dialog = new ChooseEditOrStartDialog();
+                dialog.setPlanId(planId);
+                dialog.setName(name);
+                dialog.show(getSupportFragmentManager(), "dialog");
             }
         });
     }
