@@ -89,10 +89,12 @@ public class ShowTrainingPlansActivity extends AppCompatActivity {
             public void OnItemClick(DocumentSnapshot documentSnapshot, int position) {
                 String planId = documentSnapshot.getId();
                 String name = documentSnapshot.toObject(TrainingPlan.class).getName();
+                int duration = documentSnapshot.toObject(TrainingPlan.class).getDurationInWeeks();
 
                 ChooseEditOrStartDialog dialog = new ChooseEditOrStartDialog();
                 dialog.setPlanId(planId);
                 dialog.setName(name);
+                dialog.setDuration(duration);
                 dialog.show(getSupportFragmentManager(), "dialog");
             }
         });

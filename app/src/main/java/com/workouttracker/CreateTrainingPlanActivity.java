@@ -97,11 +97,13 @@ public class CreateTrainingPlanActivity extends AppCompatActivity {
             final DocumentReference planRef = db.collection("trainingPlans").document();
             batch.set(planRef, plan);
             for (TrainingWeek week:weeks) {
-                DocumentReference weekRef = planRef.collection("trainingWeeks").document();
+                DocumentReference weekRef = planRef.collection("trainingWeeks")
+                        .document(String.valueOf(week.getWeekNumber()));
                 batch.set(weekRef, week);
 
                 for (TrainingDay day:days) {
-                    batch.set(weekRef.collection("trainingDays").document(), day);
+                    batch.set(weekRef.collection("trainingDays")
+                            .document(String.valueOf(day.getDayNumber())), day);
                 }
             }
 

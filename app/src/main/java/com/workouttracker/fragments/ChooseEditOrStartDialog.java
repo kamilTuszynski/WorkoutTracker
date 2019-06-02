@@ -15,17 +15,22 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
+import com.google.firebase.firestore.WriteBatch;
 import com.workouttracker.TrainingWeeksActivity;
 import com.workouttracker.models.TrainingSet;
+import com.workouttracker.models.Workout;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +38,7 @@ import java.util.Map;
 public class ChooseEditOrStartDialog extends DialogFragment implements DatePickerDialog.OnDateSetListener {
     private String planId;
     private String name;
+    private int duration;
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private DocumentReference userRef;
@@ -44,6 +50,10 @@ public class ChooseEditOrStartDialog extends DialogFragment implements DatePicke
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
     }
 
     @NonNull
@@ -84,7 +94,7 @@ public class ChooseEditOrStartDialog extends DialogFragment implements DatePicke
         return builder.create();
     }
 
-    private void addWorkoutsToFirestore(){
+    private void addWorkoutsToFirestore(final Calendar calendar){
         String userUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
         Map<String, Object> user = new HashMap<>();
         user.put("uid", userUID);
@@ -107,52 +117,62 @@ public class ChooseEditOrStartDialog extends DialogFragment implements DatePicke
 
         planRef = db.collection("trainingPlans").document(planId);
 
-        final List<TrainingSet> trainingSets = new ArrayList<TrainingSet>();
+        ArrayList<Task<?>> tasks = new ArrayList<>();
 
-        planRef.collection("trainingWeeks").orderBy("weekNumber").get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                document.getReference().collection("trainingDays").orderBy("dayNumber").get()
-                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                if (task.isSuccessful()) {
-                                                    for (QueryDocumentSnapshot document : task.getResult()) {
-                                                        document.getReference().collection("trainingSets").orderBy("timeMillis").get()
-                                                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                                    @Override
-                                                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                                        if(task.isSuccessful()){
-                                                                            for (QueryDocumentSnapshot document : task.getResult()){
-                                                                                TrainingSet set = document.toObject(TrainingSet.class);
-                                                                                trainingSets.add(set);
-                                                                            }
-                                                                        } else {
-                                                                            return;
-                                                                        }
-                                                                    }
-                                                                });
-                                                    }
-                                                } else {
-                                                    return;
-                                                }
-                                            }
-                                        });
-                            }
-                        } else {
-                            return;
-                        }
-                }});
-
-        for(TrainingSet set : trainingSets){
-            userRef.collection("workouts").add(set);
+        for(int week=1; week<= duration;week++){
+            for(int day=1;day<=7;day++){
+                Query query = planRef.collection("trainingWeeks")
+                        .document(String.valueOf(week)).collection("trainingDays")
+                        .document(String.valueOf(day)).collection("trainingSets").orderBy("timeMillis");
+                Task task = query.get();
+                tasks.add(task);
+            }
         }
 
+        Task<List<QuerySnapshot>> allTasks = Tasks.whenAllSuccess(tasks);
+        allTasks.addOnSuccessListener(new OnSuccessListener<List<QuerySnapshot>>() {
+            @Override
+            public void onSuccess(List<QuerySnapshot> querySnapshots) {
+                List<List<TrainingSet>> trainingDays = new ArrayList<>();
 
-        userRef.collection("workouts").add(user);
+                for(QuerySnapshot queryDocumentSnapshots : querySnapshots){
+                    List<TrainingSet> trainingSets = new ArrayList<>();
+                    for(QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots){
+                        TrainingSet set = documentSnapshot.toObject(TrainingSet.class);
+                        trainingSets.add(set);
+                    }
+                    trainingDays.add(trainingSets);
+
+                }
+
+                WriteBatch batch = db.batch();
+                Date date = calendar.getTime();
+
+                for(List<TrainingSet> day : trainingDays){
+                    Workout workout = new Workout(date);
+
+                    DocumentReference workoutRef = userRef.collection("workouts").document();
+                    batch.set(workoutRef, workout);
+
+                    Calendar c = Calendar.getInstance();
+                    c.setTime(date);
+                    c.add(Calendar.DATE, 1);
+                    date = c.getTime();
+
+                    for(TrainingSet set : day){
+                        DocumentReference setRef = workoutRef.collection("sets").document();
+                        batch.set(setRef, set);
+                    }
+                }
+
+                batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+
+                    }
+                });
+            }
+        });
 
     }
 
@@ -163,8 +183,8 @@ public class ChooseEditOrStartDialog extends DialogFragment implements DatePicke
         c.set(Calendar.MONTH, month);
         c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
-
-
-        addWorkoutsToFirestore();
+        addWorkoutsToFirestore(c);
     }
 }
+
+

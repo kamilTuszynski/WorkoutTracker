@@ -15,12 +15,15 @@ import android.widget.CompoundButton;
 import android.widget.Toast;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.workouttracker.adapters.TrainingSetAdapter;
 import com.workouttracker.fragments.AddTrainingSetDialog;
+import com.workouttracker.models.TrainingDay;
 import com.workouttracker.models.TrainingSet;
 
 public class TrainingSetsActivity extends AppCompatActivity {
@@ -28,6 +31,7 @@ public class TrainingSetsActivity extends AppCompatActivity {
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference setsRef;
+    private DocumentReference dayRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +74,8 @@ public class TrainingSetsActivity extends AppCompatActivity {
                     if(count == 0){
                         fab.setEnabled(false);
                         fab.setBackgroundTintList(ColorStateList.valueOf(Color.GRAY));
+
+                        dayRef.update("restDay", true);
                     }
                     else{
                         checkBoxRestDay.setChecked(false);
@@ -79,7 +85,17 @@ public class TrainingSetsActivity extends AppCompatActivity {
                 else{
                     fab.setEnabled(true);
                     fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
+
+                    dayRef.update("restDay", false);
                 }
+            }
+        });
+
+        dayRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                TrainingDay day = documentSnapshot.toObject(TrainingDay.class);
+                checkBoxRestDay.setChecked(day.isRestDay());
             }
         });
 
@@ -113,6 +129,7 @@ public class TrainingSetsActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String path = intent.getExtras().getString("path");
 
+        dayRef = db.document(path);
         setsRef = db.collection(path + "/trainingSets");
         Query query = setsRef.orderBy("timeMillis", Query.Direction.ASCENDING);
 

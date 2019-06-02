@@ -20,6 +20,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.workouttracker.fragments.WorkoutsFragment;
 
 import java.util.Arrays;
 import java.util.List;
@@ -92,8 +93,12 @@ public class NavigationActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        if (id == R.id.nav_workout) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.c_main,
+                    new WorkoutsFragment()).commit();
+            drawer.closeDrawer(GravityCompat.START);
         } else if (id == R.id.nav_createPlan) {
             Intent intent = new Intent(NavigationActivity.this, ShowTrainingPlansActivity.class);
             startActivity(intent);
@@ -114,8 +119,6 @@ public class NavigationActivity extends AppCompatActivity
                     });
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        //drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
@@ -131,6 +134,9 @@ public class NavigationActivity extends AppCompatActivity
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 TextView textViewLoggedAccount = findViewById(R.id.textView_loggedAccount);
                 textViewLoggedAccount.setText(user.getEmail());
+
+                getSupportFragmentManager().beginTransaction().replace(R.id.c_main,
+                        new WorkoutsFragment()).commit();
             } else {
                 // Sign in failed. If response is null the user canceled the
                 // sign-in flow using the back button. Otherwise check
