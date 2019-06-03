@@ -148,18 +148,24 @@ public class ChooseEditOrStartDialog extends DialogFragment implements DatePicke
                 WriteBatch batch = db.batch();
                 Date date = calendar.getTime();
 
-                for(List<TrainingSet> day : trainingDays){
+                for(List<TrainingSet> trainingDay : trainingDays){
                     Workout workout = new Workout(date);
-
-                    DocumentReference workoutRef = userRef.collection("workouts").document();
-                    batch.set(workoutRef, workout);
 
                     Calendar c = Calendar.getInstance();
                     c.setTime(date);
+                    int year = c.get(Calendar.YEAR);
+                    int month = c.get(Calendar.MONTH);
+                    int day = c.get(Calendar.DAY_OF_MONTH);
+
+                    String id = String.valueOf(year) + String.valueOf(month) + String.valueOf(day);
+
+                    DocumentReference workoutRef = userRef.collection("workouts").document(id);
+                    batch.set(workoutRef, workout);
+
                     c.add(Calendar.DATE, 1);
                     date = c.getTime();
 
-                    for(TrainingSet set : day){
+                    for(TrainingSet set : trainingDay){
                         DocumentReference setRef = workoutRef.collection("sets").document();
                         batch.set(setRef, set);
                     }

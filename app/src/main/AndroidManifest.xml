@@ -9,7 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ShowTrainingPlansActivity"></activity>
+        <activity android:name=".ShowTrainingPlansActivity" />
         <activity android:name=".TrainingSetsActivity" />
         <activity android:name=".TrainingDaysActivity" />
         <activity android:name=".TrainingWeeksActivity" />

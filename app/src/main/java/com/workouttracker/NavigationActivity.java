@@ -135,8 +135,8 @@ public class NavigationActivity extends AppCompatActivity
                 TextView textViewLoggedAccount = findViewById(R.id.textView_loggedAccount);
                 textViewLoggedAccount.setText(user.getEmail());
 
-                getSupportFragmentManager().beginTransaction().replace(R.id.c_main,
-                        new WorkoutsFragment()).commit();
+//                getSupportFragmentManager().beginTransaction().replace(R.id.c_main,
+//                        new WorkoutsFragment()).commit();
             } else {
                 // Sign in failed. If response is null the user canceled the
                 // sign-in flow using the back button. Otherwise check
