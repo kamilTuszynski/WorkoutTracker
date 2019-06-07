@@ -5,15 +5,23 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <Spinner
-        android:id="@+id/spinner_exerciseName"
+
+    <TextView
+        android:id="@+id/dialogEditWorkoutSet_textView_exerciseName"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-
+        android:layout_height="wrap_content"
+        android:text="Nazwa ćwiczenia" />
 
     <EditText
-        android:id="@+id/editText_reps"
+        android:id="@+id/dialogEditWorkoutSet_editText_weight"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Ciężar"
+        android:inputType="numberDecimal" />
+
+    <EditText
+        android:id="@+id/dialogEditWorkoutSet_editText_reps"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -21,7 +29,7 @@
         android:inputType="numberSigned" />
 
     <EditText
-        android:id="@+id/editText_rpe"
+        android:id="@+id/dialogEditWorkoutSet_editText_rpe"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"

@@ -16,8 +16,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.WriteBatch;
-import com.workouttracker.models.Exercise;
-import com.workouttracker.models.SetParameters;
 import com.workouttracker.models.TrainingDay;
 import com.workouttracker.models.TrainingPlan;
 import com.workouttracker.models.TrainingWeek;
@@ -75,12 +73,6 @@ public class CreateTrainingPlanActivity extends AppCompatActivity {
             String type = spinner_planType.getSelectedItem().toString();
             String difficulty = spinner_planDifficulty.getSelectedItem().toString();
             int duration = Integer.parseInt(spinner_planDuration.getSelectedItem().toString());
-
-            SetParameters params = new SetParameters(100,5,9);
-            Exercise exercise = new Exercise("Przysiad",false,false,false,false);
-
-            SetParameters params2 = new SetParameters(50,10,8);
-            Exercise exercise2 = new Exercise("Klata",false,false,false,false);
 
             TrainingPlan plan = new TrainingPlan(name,description,type,difficulty,duration);
             final List<TrainingWeek> weeks = new ArrayList<TrainingWeek>();
