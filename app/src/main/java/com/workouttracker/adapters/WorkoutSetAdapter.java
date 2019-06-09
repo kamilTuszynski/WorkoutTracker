@@ -11,10 +11,11 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.workouttracker.R;
-import com.workouttracker.models.TrainingSet;
+import com.workouttracker.models.WorkoutSet;
+import com.workouttracker.util.StringUtils;
 
 
-public class WorkoutSetAdapter extends FirestoreRecyclerAdapter<TrainingSet, WorkoutSetAdapter.WorkoutSetHolder> {
+public class WorkoutSetAdapter extends FirestoreRecyclerAdapter<WorkoutSet, WorkoutSetAdapter.WorkoutSetHolder> {
 
     private OnItemClickListener listener;
 
@@ -29,11 +30,15 @@ public class WorkoutSetAdapter extends FirestoreRecyclerAdapter<TrainingSet, Wor
     }
 
     @Override
-    protected void onBindViewHolder(@NonNull WorkoutSetHolder holder, int position, @NonNull TrainingSet model) {
-        holder.textViewTrainingSetExerciseName.setText(model.getExerciseName());
-        holder.textViewTrainingSetReps.setText(String.valueOf(model.getReps()) + " powtórzeń");
+    protected void onBindViewHolder(@NonNull WorkoutSetHolder holder, int position, @NonNull WorkoutSet model) {
+        holder.textViewWorkoutSetExerciseName.setText(model.getExerciseName());
+        holder.textViewWorkoutSetWeight.setText(StringUtils.floatToStringWithoutTrailingZeros(model.getWeight()) + " kg");
+        holder.textViewWorkoutSetReps.setText(String.valueOf(model.getReps()) + " powt.");
         if(model.getRpe() != 0){
-            holder.getTextViewTrainingSetRpe.setText("@" + String.valueOf(model.getRpe()));
+            holder.textViewWorkoutSetRpe.setText("@" + StringUtils.floatToStringWithoutTrailingZeros(model.getRpe()));
+        }
+        else {
+            holder.textViewWorkoutSetRpe.setText("");
         }
     }
 
@@ -50,15 +55,17 @@ public class WorkoutSetAdapter extends FirestoreRecyclerAdapter<TrainingSet, Wor
     }
 
     class WorkoutSetHolder extends RecyclerView.ViewHolder{
-        TextView textViewTrainingSetExerciseName;
-        TextView textViewTrainingSetReps;
-        TextView getTextViewTrainingSetRpe;
+        TextView textViewWorkoutSetExerciseName;
+        TextView textViewWorkoutSetWeight;
+        TextView textViewWorkoutSetReps;
+        TextView textViewWorkoutSetRpe;
 
         public WorkoutSetHolder(View itemView){
             super(itemView);
-            textViewTrainingSetExerciseName = itemView.findViewById(R.id.textView_workoutSetExerciseName);
-            textViewTrainingSetReps = itemView.findViewById(R.id.textView_workoutSetReps);
-            getTextViewTrainingSetRpe = itemView.findViewById(R.id.textView_workoutSetRpe);
+            textViewWorkoutSetExerciseName = itemView.findViewById(R.id.textView_workoutSetExerciseName);
+            textViewWorkoutSetWeight = itemView.findViewById(R.id.textView_workoutSetWeight);
+            textViewWorkoutSetReps = itemView.findViewById(R.id.textView_workoutSetReps);
+            textViewWorkoutSetRpe = itemView.findViewById(R.id.textView_workoutSetRpe);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

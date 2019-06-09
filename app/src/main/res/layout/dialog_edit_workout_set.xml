@@ -28,11 +28,25 @@
         android:hint="Powtórzenia"
         android:inputType="numberSigned" />
 
-    <EditText
-        android:id="@+id/dialogEditWorkoutSet_editText_rpe"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="RPE"
-        android:inputType="numberDecimal" />
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="8dp"
+            android:text="Rpe:"
+            android:textSize="18sp" />
+
+        <Spinner
+            android:id="@+id/dialogEditWorkoutSet_spinner_rpe"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:entries="@array/array_rpe"/>
+    </LinearLayout>
+
+
 </LinearLayout>

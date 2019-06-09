@@ -17,15 +17,30 @@
             android:id="@+id/textView_workoutSetExerciseName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="3"
+            android:layout_weight="4"
             android:text="Ćwiczenie" />
+
+        <TextView
+            android:id="@+id/textView_workoutSetWeight"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:gravity="end"
+            android:text="Waga" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:text="x" />
 
         <TextView
             android:id="@+id/textView_workoutSetReps"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:text="x powtórzeń" />
+            android:layout_weight="2"
+            android:text="x powt." />
 
         <TextView
             android:id="@+id/textView_workoutSetRpe"

@@ -8,7 +8,9 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatDialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -18,12 +20,13 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.workouttracker.R;
 import com.workouttracker.models.WorkoutSet;
+import com.workouttracker.util.StringUtils;
 
 public class EditWorkoutSetDialog extends AppCompatDialogFragment {
 
     private EditText editTextWeight;
     private EditText editTextReps;
-    private EditText editTextRpe;
+    private Spinner spinnerRpe;
     private TextView textViewExerciseName;
     private String setRefPath;
 
@@ -58,7 +61,7 @@ public class EditWorkoutSetDialog extends AppCompatDialogFragment {
 
         editTextWeight = view.findViewById(R.id.dialogEditWorkoutSet_editText_weight);
         editTextReps = view.findViewById(R.id.dialogEditWorkoutSet_editText_reps);
-        editTextRpe = view.findViewById(R.id.dialogEditWorkoutSet_editText_rpe);
+        spinnerRpe = view.findViewById(R.id.dialogEditWorkoutSet_spinner_rpe);
         textViewExerciseName = view.findViewById(R.id.dialogEditWorkoutSet_textView_exerciseName);
         setRef = db.document(setRefPath);
 
@@ -71,7 +74,19 @@ public class EditWorkoutSetDialog extends AppCompatDialogFragment {
                         WorkoutSet workoutSet = document.toObject(WorkoutSet.class);
                         editTextWeight.setText(String.valueOf(workoutSet.getWeight()));
                         editTextReps.setText(String.valueOf(workoutSet.getReps()));
-                        editTextRpe.setText(String.valueOf(workoutSet.getRpe()));
+
+                        ArrayAdapter adapter = (ArrayAdapter) spinnerRpe.getAdapter();
+                        String s = StringUtils.floatToStringWithoutTrailingZeros(workoutSet.getRpe());
+                        int position = adapter.getPosition(s);
+
+                        spinnerRpe.setSelection(position);
+
+//                        String[] rpeArray = getResources().getStringArray(R.array.array_rpe);
+//                        for (int i = 0;i < rpeArray.length; i++) {
+//                            if(String.valueOf(workoutSet.getRpe()).equals(rpeArray[i])){
+//                                spinnerRpe.setSelection(i);
+//                            }
+//                        }
                         textViewExerciseName.setText(workoutSet.getExerciseName());
 
 
@@ -89,6 +104,25 @@ public class EditWorkoutSetDialog extends AppCompatDialogFragment {
 
     private void updateWorkoutSet()
     {
+        boolean validatedCorrectly = true;
 
+        if(editTextReps.getText().toString().trim().length() == 0){
+            editTextReps.setError("Podanie liczby powtórzeń jest wymagane!");
+            validatedCorrectly = false;
+        }
+        if(editTextWeight.getText().toString().trim().length() == 0){
+            editTextWeight.setError("Podanie liczby powtórzeń jest wymagane!");
+            validatedCorrectly = false;
+        }
+
+        if(validatedCorrectly){
+            float weight = Float.parseFloat(editTextWeight.getText().toString());
+            int reps = Integer.parseInt(editTextReps.getText().toString());
+            float rpe = Float.parseFloat(spinnerRpe.getSelectedItem().toString());
+
+            setRef.update("weight", weight);
+            setRef.update("reps", reps);
+            setRef.update("rpe", rpe);
+        }
     }
 }

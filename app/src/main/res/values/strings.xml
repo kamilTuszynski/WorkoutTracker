@@ -34,6 +34,20 @@
         <item>20</item>
     </string-array>
 
+    <string-array name="array_rpe">
+        <item>0</item>
+        <item>5.5</item>
+        <item>6</item>
+        <item>6.5</item>
+        <item>7</item>
+        <item>7.5</item>
+        <item>8</item>
+        <item>8.5</item>
+        <item>9</item>
+        <item>9.5</item>
+        <item>10</item>
+    </string-array>
+
     <string-array name="trainingPlanDifficulty">
         <item>Początkujący</item>
         <item>Średniozaawansowany</item>
@@ -46,4 +60,5 @@
         <item>Kulturystyka</item>
         <item>Inne</item>
     </string-array>
+    <string name="title_activity_maps">Map</string>
 </resources>

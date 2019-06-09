@@ -25,7 +25,7 @@ import com.workouttracker.models.TrainingSet;
 
 public class AddTrainingSetDialog extends AppCompatDialogFragment {
     private EditText editTextReps;
-    private EditText editTextRpe;
+    private Spinner spinnerRpe;
     private Spinner spinnerExerciseName;
     private String setsRefPath;
 
@@ -59,7 +59,7 @@ public class AddTrainingSetDialog extends AppCompatDialogFragment {
                 });
 
         editTextReps = view.findViewById(R.id.editText_reps);
-        editTextRpe = view.findViewById(R.id.editText_rpe);
+        spinnerRpe = view.findViewById(R.id.dialogAddTrainingSet_spinner_rpe);
         spinnerExerciseName = view.findViewById(R.id.spinner_exerciseName);
         setsRef = db.collection(setsRefPath);
 
@@ -100,15 +100,7 @@ public class AddTrainingSetDialog extends AppCompatDialogFragment {
         }
         else{
             int reps = Integer.parseInt(editTextReps.getText().toString());
-            int rpe;
-
-            try {
-                rpe = Integer.parseInt(editTextRpe.getText().toString());
-            }
-            catch (NumberFormatException e){
-                rpe = 0;
-            }
-
+            float rpe = Float.parseFloat(spinnerRpe.getSelectedItem().toString());
             long currentTimeMillis = System.currentTimeMillis();
             TrainingSet set = new TrainingSet(exerciseName, reps, rpe, currentTimeMillis);
             setsRef.add(set);

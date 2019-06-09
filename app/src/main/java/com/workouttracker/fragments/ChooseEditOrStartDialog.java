@@ -149,7 +149,7 @@ public class ChooseEditOrStartDialog extends DialogFragment implements DatePicke
                 Date date = calendar.getTime();
 
                 for(List<TrainingSet> trainingDay : trainingDays){
-                    Workout workout = new Workout(date);
+                    Workout workout = new Workout(date, null, null, null);
 
                     Calendar c = Calendar.getInstance();
                     c.setTime(date);

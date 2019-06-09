@@ -15,6 +15,27 @@
         app:selectorColor="#c62828"
         app:textColorNormal="#bababa" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">\
+
+        <TextView
+            android:id="@+id/textView_placeName"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="8dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="Brak" />
+
+        <Button
+            android:id="@+id/btn_changeLocation"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Zmień" />
+
+    </LinearLayout>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recView_workoutSets"
         android:layout_width="match_parent"
