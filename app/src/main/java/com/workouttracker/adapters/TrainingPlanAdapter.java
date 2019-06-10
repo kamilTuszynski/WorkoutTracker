@@ -9,7 +9,11 @@ import android.widget.TextView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.workouttracker.R;
 import com.workouttracker.models.TrainingPlan;
 
@@ -47,6 +51,41 @@ public class TrainingPlanAdapter extends FirestoreRecyclerAdapter<TrainingPlan, 
 
     public void deleteItem(int position) {
         getSnapshots().getSnapshot(position).getReference().delete();
+
+        // UGLY, but there's no other way
+        getSnapshots().getSnapshot(position).getReference()
+                .collection("trainingWeeks").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()){
+                            for (QueryDocumentSnapshot document : task.getResult()){
+                                document.getReference().delete();
+                                document.getReference().collection("trainingDays")
+                                        .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        if(task.isSuccessful()){
+                                            for (QueryDocumentSnapshot document : task.getResult()){
+                                                document.getReference().delete();
+                                                document.getReference().collection("trainingSets")
+                                                        .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                        if(task.isSuccessful()){
+                                                            for (QueryDocumentSnapshot document : task.getResult()){
+                                                                document.getReference().delete();
+                                                            }
+                                                        }
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    }
+                });
     }
 
     class TrainingPlanHolder extends RecyclerView.ViewHolder{

@@ -50,7 +50,7 @@ public class CreateTrainingPlanActivity extends AppCompatActivity {
     {
         boolean validatedCorrectly = true;
         EditText planNameEditText = (EditText) findViewById(R.id.editText_planName);
-        EditText planDescriptionEditText = (EditText) findViewById(R.id.editText_planName);
+        EditText planDescriptionEditText = (EditText) findViewById(R.id.editText_planDescription);
         Spinner spinner_planType = (Spinner) findViewById(R.id.spinner_planType);
         Spinner spinner_planDifficulty = (Spinner) findViewById(R.id.spinner_planDifficulty);
         Spinner spinner_planDuration = (Spinner) findViewById(R.id.spinner_planDuration);
@@ -108,6 +108,7 @@ public class CreateTrainingPlanActivity extends AppCompatActivity {
                     i.putExtra("planId", planId);
                     i.putExtra("planName", name);
                     startActivity(i);
+                    finish();
                 }
             })
             .addOnFailureListener(new OnFailureListener() {

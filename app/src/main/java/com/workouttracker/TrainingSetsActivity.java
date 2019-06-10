@@ -5,9 +5,11 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
@@ -151,5 +153,25 @@ public class TrainingSetsActivity extends AppCompatActivity {
                 Toast.makeText(TrainingSetsActivity.this, id, Toast.LENGTH_LONG).show();
             }
         });
+
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
+                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                adapter.deleteItem(viewHolder.getAdapterPosition());
+                showSnackbar();
+            }
+        }).attachToRecyclerView(recyclerView);
+    }
+
+    private void showSnackbar() {
+        Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), "Seria usunięta",
+                Snackbar.LENGTH_LONG);
+        snackbar.show();
     }
 }

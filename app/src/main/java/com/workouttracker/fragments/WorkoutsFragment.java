@@ -4,9 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -122,7 +124,7 @@ public class WorkoutsFragment extends Fragment {
         adapter.stopListening();
     }
 
-    private void setUpRecyclerView(View view, Calendar date) {
+    private void setUpRecyclerView(final View view, Calendar date) {
         int year = date.get(Calendar.YEAR);
         int month = date.get(Calendar.MONTH);
         int day = date.get(Calendar.DAY_OF_MONTH);
@@ -137,8 +139,17 @@ public class WorkoutsFragment extends Fragment {
                 }
 
                 if (document != null && document.exists()) {
+                    textViewPlaceName.setVisibility(View.VISIBLE);
+                    view.findViewById(R.id.btn_changeLocation).setVisibility(View.VISIBLE);
+                    recyclerView.setVisibility(View.VISIBLE);
                     Workout workout = document.toObject(Workout.class);
-                    textViewPlaceName.setText(workout.getPlaceName());
+                    textViewPlaceName.setText(workout.getPlaceName() + ": " + workout.getPlaceAddress());
+                }
+                else{
+                    textViewPlaceName.setVisibility(View.GONE);
+                    view.findViewById(R.id.btn_changeLocation).setVisibility(View.GONE);
+                    recyclerView.setVisibility(View.GONE);
+                    return;
                 }
             }
         });
@@ -168,6 +179,20 @@ public class WorkoutsFragment extends Fragment {
             }
         });
         adapter.startListening();
+
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
+                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                adapter.deleteItem(viewHolder.getAdapterPosition());
+                showSnackbar();
+            }
+        }).attachToRecyclerView(recyclerView);
     }
 
     private void startChangeWorkoutLocationAcitivity(){
@@ -179,5 +204,11 @@ public class WorkoutsFragment extends Fragment {
         String id = String.valueOf(year) + String.valueOf(month) + String.valueOf(day);
         intent.putExtra("workoutRefPath", workoutsRef.document(id).getPath());
         startActivity(intent);
+    }
+
+    private void showSnackbar() {
+        Snackbar snackbar = Snackbar.make(getActivity().findViewById(android.R.id.content), "Seria usunięta",
+                Snackbar.LENGTH_LONG);
+        snackbar.show();
     }
 }

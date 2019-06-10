@@ -7,30 +7,37 @@ public class Workout {
     private Double placeLatitude;
     private Double placeLongitude;
     private String placeName;
+    private String placeAddress;
 
     public Workout() {
     }
 
-    public Workout(Date date, Double placeLatitude, Double placeLongitude, String placeName) {
+    public Workout(Date date, Double placeLatitude, Double placeLongitude, String placeName, String placeAddress) {
         this.date = date;
         this.placeLatitude = placeLatitude;
         this.placeLongitude = placeLongitude;
         this.placeName = placeName;
+        this.placeAddress = placeAddress;
     }
+
 
     public Date getDate() {
         return date;
     }
 
-    public double getPlaceLatitude() {
+    public Double getPlaceLatitude() {
         return placeLatitude;
     }
 
-    public double getPlaceLongitude() {
+    public Double getPlaceLongitude() {
         return placeLongitude;
     }
 
     public String getPlaceName() {
         return placeName;
+    }
+
+    public String getPlaceAddress() {
+        return placeAddress;
     }
 }

@@ -28,18 +28,20 @@ import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.workouttracker.models.Workout;
 
 import java.util.Arrays;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
-    private final LatLng mDefaultLocation = new LatLng(-33.8523341, 151.2106085);
+    private final LatLng mDefaultLocation = new LatLng(52.230053, 21.011291);
     private static final int DEFAULT_ZOOM = 15;
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
 
-    private String workoutRefPath;
     private String placeName;
+    private String placeAddress;
     private Double placeLatitude;
     private Double placeLongitude;
 
@@ -51,14 +53,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Location mLastKnownLocation;
     private FusedLocationProviderClient mFusedLocationProviderClient;
 
-
+    private AutocompleteSupportFragment autocompleteFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
-        workoutRefPath = getIntent().getExtras().getString("workoutRefPath");
+        String workoutRefPath = getIntent().getExtras().getString("workoutRefPath");
         workoutRef = db.document(workoutRefPath);
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
@@ -72,7 +74,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
         // Initialize the AutocompleteSupportFragment.
-        final AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
+        autocompleteFragment = (AutocompleteSupportFragment)
                 getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
 
         // Specify the types of place data to return.
@@ -89,13 +91,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(), DEFAULT_ZOOM));
 
                 placeName = place.getName();
+                placeAddress = place.getAddress();
                 placeLatitude = place.getLatLng().latitude;
                 placeLongitude = place.getLatLng().longitude;
             }
 
             @Override
             public void onError(Status status) {
-                // TODO: Handle the error.
             }
         });
 
@@ -109,6 +111,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                  .findViewById(R.id.places_autocomplete_clear_button).setVisibility(View.GONE);
                          mMap.clear();
                          placeName = null;
+                         placeAddress = null;
                          placeLatitude = null;
                          placeLongitude = null;
                     }
@@ -142,13 +145,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Turn on the My Location layer and the related control on the map.
         updateLocationUI();
 
-        // Get the current location of the device and set the position of the map.
-        getDeviceLocation();
-
-//        // Add a marker in Sydney and move the camera
-//        LatLng sydney = new LatLng(-34, 151);
-//        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-//        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        getFirestoreLocation();
     }
 
     @Override
@@ -232,11 +229,46 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    private void getFirestoreLocation(){
+        workoutRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()){
+                    DocumentSnapshot document = task.getResult();
+                    if(document.exists()){
+                        Workout workout = document.toObject(Workout.class);
+                        placeLatitude = workout.getPlaceLatitude();
+                        placeLongitude = workout.getPlaceLongitude();
+                        placeName = workout.getPlaceName();
+
+                        if(placeLatitude != null && placeLongitude != null && placeName != null){
+                            LatLng placeLatLng = new LatLng(placeLatitude, placeLongitude);
+                            mMap.addMarker(new MarkerOptions().position(placeLatLng));
+                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(placeLatLng, DEFAULT_ZOOM));
+
+                            ((EditText) autocompleteFragment.getView()
+                                    .findViewById(R.id.places_autocomplete_search_input)).setText(placeName);
+                            autocompleteFragment.getView()
+                                    .findViewById(R.id.places_autocomplete_clear_button).setVisibility(View.VISIBLE);
+                        } else {
+                            getDeviceLocation();
+                        }
+                    } else {
+                        getDeviceLocation();
+                    }
+                } else {
+                    getDeviceLocation();
+                }
+            }
+        });
+    }
+
     private void saveLocation(){
         if(placeName != null && placeLatitude != null && placeLongitude != null){
             workoutRef.update("placeName", placeName);
             workoutRef.update("placeLatitude", placeLatitude);
             workoutRef.update("placeLongitude", placeLongitude);
+            workoutRef.update("placeAddress", placeAddress);
             finish();
         }
     }
