@@ -80,13 +80,6 @@ public class EditWorkoutSetDialog extends AppCompatDialogFragment {
                         int position = adapter.getPosition(s);
 
                         spinnerRpe.setSelection(position);
-
-//                        String[] rpeArray = getResources().getStringArray(R.array.array_rpe);
-//                        for (int i = 0;i < rpeArray.length; i++) {
-//                            if(String.valueOf(workoutSet.getRpe()).equals(rpeArray[i])){
-//                                spinnerRpe.setSelection(i);
-//                            }
-//                        }
                         textViewExerciseName.setText(workoutSet.getExerciseName());
 
 
@@ -108,10 +101,6 @@ public class EditWorkoutSetDialog extends AppCompatDialogFragment {
 
         if(editTextReps.getText().toString().trim().length() == 0){
             editTextReps.setError("Podanie liczby powtórzeń jest wymagane!");
-            validatedCorrectly = false;
-        }
-        if(editTextWeight.getText().toString().trim().length() == 0){
-            editTextWeight.setError("Podanie liczby powtórzeń jest wymagane!");
             validatedCorrectly = false;
         }
 

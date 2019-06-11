@@ -16,6 +16,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -23,13 +26,18 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.workouttracker.MapsActivity;
 import com.workouttracker.R;
 import com.workouttracker.adapters.WorkoutSetAdapter;
 import com.workouttracker.models.Workout;
 import com.workouttracker.models.WorkoutSet;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 import devs.mulham.horizontalcalendar.HorizontalCalendar;
 import devs.mulham.horizontalcalendar.utils.HorizontalCalendarListener;
@@ -43,8 +51,6 @@ public class WorkoutsFragment extends Fragment {
     private WorkoutSetAdapter adapter;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference workoutsRef;
-
-
 
 
     @Override
@@ -65,6 +71,11 @@ public class WorkoutsFragment extends Fragment {
     public void onViewCreated(@NonNull final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        view.findViewById(R.id.linearLayout_location).setVisibility(View.GONE);
+        view.findViewById(R.id.recView_workoutSets).setVisibility(View.GONE);
+        view.findViewById(R.id.btn_createWorkout).setVisibility(View.GONE);
+        view.findViewById(R.id.fab_addWorkoutSet).setVisibility(View.GONE);
+
         String userUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
         workoutsRef = db.collection("users").document(userUID).collection("workouts");
 
@@ -76,6 +87,31 @@ public class WorkoutsFragment extends Fragment {
             public void onClick(View v) {
                 startChangeWorkoutLocationAcitivity();
             }
+        });
+
+        view.findViewById(R.id.btn_createWorkout)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        createWorkout(view);
+                    }
+        });
+
+        view.findViewById(R.id.fab_addWorkoutSet)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Calendar date = horizontalCalendar.getSelectedDate();
+                        int year = date.get(Calendar.YEAR);
+                        int month = date.get(Calendar.MONTH);
+                        int day = date.get(Calendar.DAY_OF_MONTH);
+                        String id = String.valueOf(year) + String.valueOf(month) + String.valueOf(day);
+                        CollectionReference setsRef = workoutsRef.document(id).collection("sets");
+
+                        CreateWorkoutSetDialog dialog = new CreateWorkoutSetDialog();
+                        dialog.setSetsRefPath(setsRef.getPath());
+                        dialog.show(getFragmentManager(), "dialog");
+                    }
         });
 
         Calendar startDate = Calendar.getInstance();
@@ -108,6 +144,32 @@ public class WorkoutsFragment extends Fragment {
             horizontalCalendar.selectDate(Calendar.getInstance(), false);
             return true;
         }
+        else if (id == R.id.action_deleteWorkout){
+            Calendar date = horizontalCalendar.getSelectedDate();
+            int year = date.get(Calendar.YEAR);
+            int month = date.get(Calendar.MONTH);
+            int day = date.get(Calendar.DAY_OF_MONTH);
+            String ID = String.valueOf(year) + String.valueOf(month) + String.valueOf(day);
+
+            ArrayList<Task<?>> tasks = deleteWorkout(ID);
+
+            Tasks.whenAllComplete(tasks).addOnCompleteListener(new OnCompleteListener<List<Task<?>>>() {
+                @Override
+                public void onComplete(@NonNull Task<List<Task<?>>> task) {
+                    showSnackbar("Trening usunięty");
+                }
+            });
+        }
+        else if (id == R.id.action_deleteAllWorkouts){
+            ArrayList<Task<?>> tasks = deleteAllWorkoutsFromToday();
+
+            Tasks.whenAllComplete(tasks).addOnCompleteListener(new OnCompleteListener<List<Task<?>>>() {
+                @Override
+                public void onComplete(@NonNull Task<List<Task<?>>> task) {
+                    showSnackbar("Treningi usunięte");
+                }
+            });
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -139,16 +201,24 @@ public class WorkoutsFragment extends Fragment {
                 }
 
                 if (document != null && document.exists()) {
-                    textViewPlaceName.setVisibility(View.VISIBLE);
-                    view.findViewById(R.id.btn_changeLocation).setVisibility(View.VISIBLE);
-                    recyclerView.setVisibility(View.VISIBLE);
+                    view.findViewById(R.id.linearLayout_location).setVisibility(View.VISIBLE);
+                    view.findViewById(R.id.recView_workoutSets).setVisibility(View.VISIBLE);
+                    view.findViewById(R.id.btn_createWorkout).setVisibility(View.GONE);
+                    view.findViewById(R.id.fab_addWorkoutSet).setVisibility(View.VISIBLE);
+
                     Workout workout = document.toObject(Workout.class);
-                    textViewPlaceName.setText(workout.getPlaceName() + ": " + workout.getPlaceAddress());
+                    if(workout.getPlaceName() != null && workout.getPlaceAddress() != null){
+                        textViewPlaceName.setText(workout.getPlaceName() + ": " + workout.getPlaceAddress());
+                    } else {
+                        textViewPlaceName.setText("Lokalizacja");
+                    }
                 }
                 else{
-                    textViewPlaceName.setVisibility(View.GONE);
-                    view.findViewById(R.id.btn_changeLocation).setVisibility(View.GONE);
-                    recyclerView.setVisibility(View.GONE);
+                    view.findViewById(R.id.linearLayout_location).setVisibility(View.GONE);
+                    view.findViewById(R.id.recView_workoutSets).setVisibility(View.GONE);
+                    view.findViewById(R.id.btn_createWorkout).setVisibility(View.VISIBLE);
+                    view.findViewById(R.id.fab_addWorkoutSet).setVisibility(View.GONE);
+
                     return;
                 }
             }
@@ -190,7 +260,7 @@ public class WorkoutsFragment extends Fragment {
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
                 adapter.deleteItem(viewHolder.getAdapterPosition());
-                showSnackbar();
+                showSnackbar("Seria usunięta");
             }
         }).attachToRecyclerView(recyclerView);
     }
@@ -206,8 +276,72 @@ public class WorkoutsFragment extends Fragment {
         startActivity(intent);
     }
 
-    private void showSnackbar() {
-        Snackbar snackbar = Snackbar.make(getActivity().findViewById(android.R.id.content), "Seria usunięta",
+    private void createWorkout(final View v){
+        final Calendar date = horizontalCalendar.getSelectedDate();
+        int year = date.get(Calendar.YEAR);
+        int month = date.get(Calendar.MONTH);
+        int day = date.get(Calendar.DAY_OF_MONTH);
+        String id = String.valueOf(year) + String.valueOf(month) + String.valueOf(day);
+
+        Workout workout = new Workout(date.getTime(), null,null,null,null);
+        workoutsRef.document(id).set(workout).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                setUpRecyclerView(v, date);
+            }
+        });
+    }
+
+    private ArrayList<Task<?>> deleteWorkout(String id){
+        final ArrayList<Task<?>> tasks = new ArrayList<>();
+
+        Task workoutDelete = workoutsRef.document(id).delete();
+        tasks.add(workoutDelete);
+
+        workoutsRef.document(id).collection("sets").get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()){
+                    for (QueryDocumentSnapshot document : task.getResult()){
+                        Task setDelete = document.getReference().delete();
+                        tasks.add(setDelete);
+                    }
+                }
+            }
+        });
+
+        return tasks;
+    }
+
+    private ArrayList<Task<?>> deleteAllWorkoutsFromToday(){
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.HOUR, 0);
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.SECOND, 0);
+        c.set(Calendar.MILLISECOND, 0);
+        final Date date = c.getTime();
+
+        final ArrayList<Task<?>> tasks = new ArrayList<>();
+
+        workoutsRef.whereGreaterThanOrEqualTo("date", date).get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()){
+                    for (QueryDocumentSnapshot document : task.getResult()){
+                        ArrayList<Task<?>> workoutDelete = deleteWorkout(document.getId());
+                        tasks.addAll(workoutDelete);
+                    }
+                }
+            }
+        });
+
+        return tasks;
+    }
+
+    private void showSnackbar(String text) {
+        Snackbar snackbar = Snackbar.make(getActivity().findViewById(android.R.id.content), text,
                 Snackbar.LENGTH_LONG);
         snackbar.show();
     }

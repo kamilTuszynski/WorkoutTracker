@@ -8,6 +8,16 @@
         android:title="Dziś"
         app:showAsAction="ifRoom" />
     <item
+        android:id="@+id/action_deleteWorkout"
+        android:orderInCategory="100"
+        android:title="Usuń trening"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_deleteAllWorkouts"
+        android:orderInCategory="100"
+        android:title="Usuń przyszłe treningi"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
         android:title="@string/action_settings"

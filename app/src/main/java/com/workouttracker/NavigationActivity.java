@@ -109,6 +109,7 @@ public class NavigationActivity extends AppCompatActivity
         } else if (id == R.id.nav_manage_exercises) {
             Intent intent = new Intent(NavigationActivity.this, ManageExercisesActivity.class);
             startActivity(intent);
+            drawer.closeDrawer(GravityCompat.START);
         } else if (id == R.id.nav_logOut) {
             AuthUI.getInstance()
                     .signOut(NavigationActivity.this)

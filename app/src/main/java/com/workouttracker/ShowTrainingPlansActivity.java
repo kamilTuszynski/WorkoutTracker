@@ -97,6 +97,7 @@ public class ShowTrainingPlansActivity extends AppCompatActivity {
                 dialog.setPlanId(planId);
                 dialog.setName(name);
                 dialog.setDuration(duration);
+                dialog.setContext(ShowTrainingPlansActivity.this);
                 dialog.show(getSupportFragmentManager(), "dialog");
             }
         });

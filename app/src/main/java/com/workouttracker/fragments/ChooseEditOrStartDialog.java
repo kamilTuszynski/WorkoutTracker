@@ -1,8 +1,10 @@
 package com.workouttracker.fragments;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -40,6 +42,8 @@ public class ChooseEditOrStartDialog extends DialogFragment implements DatePicke
     private String name;
     private int duration;
 
+    private Context context;
+
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private DocumentReference userRef;
     private DocumentReference planRef;
@@ -54,6 +58,10 @@ public class ChooseEditOrStartDialog extends DialogFragment implements DatePicke
 
     public void setDuration(int duration) {
         this.duration = duration;
+    }
+
+    public void setContext(Context context) {
+        this.context = context;
     }
 
     @NonNull
@@ -146,6 +154,11 @@ public class ChooseEditOrStartDialog extends DialogFragment implements DatePicke
                 }
 
                 WriteBatch batch = db.batch();
+
+                calendar.set(Calendar.HOUR, 0);
+                calendar.set(Calendar.MINUTE, 0);
+                calendar.set(Calendar.SECOND, 0);
+                calendar.set(Calendar.MILLISECOND, 0);
                 Date date = calendar.getTime();
 
                 for(List<TrainingSet> trainingDay : trainingDays){
@@ -159,22 +172,24 @@ public class ChooseEditOrStartDialog extends DialogFragment implements DatePicke
 
                     String id = String.valueOf(year) + String.valueOf(month) + String.valueOf(day);
 
-                    DocumentReference workoutRef = userRef.collection("workouts").document(id);
-                    batch.set(workoutRef, workout);
-
                     c.add(Calendar.DATE, 1);
                     date = c.getTime();
 
-                    for(TrainingSet set : trainingDay){
-                        DocumentReference setRef = workoutRef.collection("sets").document();
-                        batch.set(setRef, set);
+                    if (trainingDay.size() != 0){
+                        DocumentReference workoutRef = userRef.collection("workouts").document(id);
+                        batch.set(workoutRef, workout);
+
+                        for(TrainingSet set : trainingDay){
+                            DocumentReference setRef = workoutRef.collection("sets").document();
+                            batch.set(setRef, set);
+                        }
                     }
                 }
 
                 batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-
+                        ((Activity) context).finish();
                     }
                 });
             }
