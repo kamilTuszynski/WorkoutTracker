@@ -36,7 +36,6 @@
 
     <string-array name="array_rpe">
         <item>0</item>
-        <item>5.5</item>
         <item>6</item>
         <item>6.5</item>
         <item>7</item>
@@ -46,6 +45,10 @@
         <item>9</item>
         <item>9.5</item>
         <item>10</item>
+    </string-array>
+
+    <string-array name="chart_type">
+        <item>e1RM</item>
     </string-array>
 
     <string-array name="trainingPlanDifficulty">

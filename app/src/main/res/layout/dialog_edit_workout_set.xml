@@ -10,7 +10,8 @@
         android:id="@+id/dialogEditWorkoutSet_textView_exerciseName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Nazwa ćwiczenia" />
+        android:text="Nazwa ćwiczenia"
+        android:textSize="24sp" />
 
     <EditText
         android:id="@+id/dialogEditWorkoutSet_editText_weight"

@@ -6,21 +6,16 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_workout"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/ic_weightlifting"
             android:title="Trening" />
         <item
             android:id="@+id/nav_createPlan"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="Stwórz plan" />
+            android:icon="@drawable/ic_event_note_black_24dp"
+            android:title="Plany" />
         <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Rekordy" />
-        <item
-            android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Kalkulatory" />
-
+            android:id="@+id/nav_charts"
+            android:icon="@drawable/ic_show_chart_black_24dp"
+            android:title="Wykresy" />
         <item
             android:id="@+id/nav_manage_exercises"
             android:icon="@drawable/ic_menu_manage"

@@ -78,7 +78,7 @@ public class AddTrainingSetDialog extends AppCompatDialogFragment {
                                 Exercise exercise = document.toObject(Exercise.class);
                                 adapter.add(exercise.getName());
                             }
-                            spinnerExerciseName.setSelection(1);
+                            spinnerExerciseName.setSelection(0);
                         }
                         else{
 

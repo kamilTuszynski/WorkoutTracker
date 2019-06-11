@@ -79,10 +79,6 @@ public class NavigationActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -102,10 +98,9 @@ public class NavigationActivity extends AppCompatActivity
         } else if (id == R.id.nav_createPlan) {
             Intent intent = new Intent(NavigationActivity.this, ShowTrainingPlansActivity.class);
             startActivity(intent);
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
+        } else if (id == R.id.nav_charts) {
+            Intent intent = new Intent(NavigationActivity.this, ChoosePlanStatisticActivity.class);
+            startActivity(intent);
         } else if (id == R.id.nav_manage_exercises) {
             Intent intent = new Intent(NavigationActivity.this, ManageExercisesActivity.class);
             startActivity(intent);
